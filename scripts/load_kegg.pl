@@ -38,6 +38,14 @@ my $base_path = $FIG_Config::kegg || "$FIG_Config::data/KEGG";
 
 use Tracer;
 TSetup('1 *', 'WARN');
+
+if (! -f "$base_path/ligand/enzyme/enzyme")
+{
+    warn "Skipping KEGG load\n";
+    exit;
+}
+
+
 &load_ec_and_map_data;
 &load_compounds;
 &load_reactions_and_catalyzes;
