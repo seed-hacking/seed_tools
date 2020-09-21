@@ -67,7 +67,7 @@ foreach $genome ( @genomes ) {
 	$taxonomy = $1;
 	$taxonomy =~ s/^root\;\s*//io;               # Remove root node if present
 	$taxonomy =~ s/^\s+//o;                      # Remove leading whitespace if present
-	$taxonomy =~ s/\Candidatus\s+//igo ;         # Remove all occurences of "Candidatus" weasel-word
+	$taxonomy =~ s/\bCandidatus\s+//igo ;         # Remove all occurences of "Candidatus" weasel-word
 	$taxonomy =~ s/\s+/ /go;                     # Collapse multiple whitespaces
 	$taxonomy =~ s/\s+$//o;                      # Remove trailing whitespace if present
 	
@@ -142,31 +142,25 @@ close(REL);
 
 
 #  Load the database ---------------------------------------
-if (-s $genomedata) {
-    $fig->reload_table($mode, "genome",
-		       "genome varchar(16) UNIQUE NOT NULL, gname varchar(255), szdna BIGINT, "
-		       . "cksum BIGINT, maindomain varchar(20), pegs INTEGER, "
-		       . "rnas INTEGER, complete CHAR, restrictions CHAR, taxonomy text, "
-		       . "PRIMARY KEY ( genome )",
-		       { genome_ix => "genome" },
-		       $genomedata, \@genomes);
-    
-    unlink($genomedata);
-}
-else {
+if (!-s $genomedata) {
     print STDERR "WARNING: No genome data to update\n";
 }
 
-if (-s $genome_md5sum) {
-    $fig->reload_table($mode, "genome_md5sum",
-		       "genome varchar(16) UNIQUE NOT NULL, md5sum char(32), PRIMARY KEY ( genome )",
-		       { }, $genome_md5sum, \@genomes);
-    
-    unlink($genome_md5sum);
-}
-else {
-    print STDERR "WARNING: No genome MD5 sums to update\n";
-}
+# Always call reload so that the table may be created on an empty SEED.
+$fig->reload_table($mode, "genome",
+		   "genome varchar(16) UNIQUE NOT NULL, gname varchar(255), szdna BIGINT, "
+		   . "cksum BIGINT, maindomain varchar(20), pegs INTEGER, "
+		   . "rnas INTEGER, complete CHAR, restrictions CHAR, taxonomy text, "
+		   . "PRIMARY KEY ( genome )",
+		   { genome_ix => "genome" },
+		   $genomedata, \@genomes);
+
+unlink($genomedata);
+
+$fig->reload_table($mode, "genome_md5sum",
+		   "genome varchar(16) UNIQUE NOT NULL, md5sum char(32), PRIMARY KEY ( genome )",
+		   { }, $genome_md5sum, \@genomes);
+
 Trace("Genome counts complete.") if T(2);
 exit(0);
 
