@@ -20,7 +20,7 @@
  *
  *  Usage:  fastasize -t < fasta_file  > nseq nresidues
  *  or      fastasize    < fasta_file  > id nresidues ...
- *
+ */
 /*  These include files are appropriate for Machintosh OS X  */
 
 #include <stdio.h>
