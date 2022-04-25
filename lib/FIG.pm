@@ -16832,7 +16832,7 @@ sub all_pattyfam_functions
     my $out;
     
     eval {
-    my $res = $self->db_handle->SQL("SELECT DISTINCT(function) FROM family_membership");
+    my $res = $self->db_handle->SQL("SELECT DISTINCT(family_function) FROM family_membership");
     $out = $res;
     };
     return $out;
@@ -16846,7 +16846,7 @@ sub pattyfam_members
     my @out;
     
     eval {
-	my $res = $self->db_handle->SQL("SELECT fid, family, function FROM family_membership WHERE family = ?",
+	my $res = $self->db_handle->SQL("SELECT fid, family, family_function FROM family_membership WHERE family = ?",
 					undef, $fam_id);
 	
 	for my $ent (@$res)
@@ -16871,7 +16871,7 @@ sub pattyfams_for_proteins
     eval {
 	my $qs = join(", ", map { "?" } @$ids);
 	
-	my $res = $self->db_handle->SQL("SELECT fid, family, function FROM family_membership WHERE fid IN ($qs)",
+	my $res = $self->db_handle->SQL("SELECT fid, family, family_function FROM family_membership WHERE fid IN ($qs)",
 					undef, @$ids);
 	
 	for my $ent (@$res)
@@ -16892,7 +16892,7 @@ sub pattyfams_for_function
     eval {
 
 	my $op = $fn =~ /%/ ? 'LIKE' : '=';
-	$res = $self->db_handle->SQL("SELECT fid, family, function FROM family_membership WHERE function $op ?",
+	$res = $self->db_handle->SQL("SELECT fid, family, family_function FROM family_membership WHERE function $op ?",
 					undef, $fn);
     };
     return $res;
