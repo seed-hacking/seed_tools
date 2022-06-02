@@ -2,7 +2,7 @@ use strict;
 use FIG;
 use File::Basename;
 use Proc::ParallelLoop;
-#use PerlIO::via::Blockwise;
+use PerlIO::via::Blockwise;
 use DB_File;
 
 # /home/olson/FIGdisk/FIG/bin/update_sims2 nr peg.synonyms 300 prev_sims Sims.005 sims.job.sge/sims.flipped ids.deleted
@@ -135,8 +135,7 @@ pareach \@files, sub {
     my $file = shift;
     print STDERR "processing $file\n";
 
-#    open(OLD,"<:via(Blockwise)", $file)
-    open(OLD,"<", $file)
+    open(OLD,"<:via(Blockwise)", $file)
         || die "could not open $file";
 
     #
