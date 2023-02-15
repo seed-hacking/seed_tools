@@ -470,6 +470,9 @@ sub seed_global_dbh
 {
     my($self) = @_;
 
+
+    return undef;
+
     my $dbh = $self->{_seed_global_dbh};
     if (!$dbh)
     {
@@ -1301,19 +1304,22 @@ sub index_genome
 	#
 	# See what the clearinghouse has, and register features if they are not there.
 	#
-	my $clnext = $self->clearinghouse_next_feature_id($genome, $ftype);
-	if ($clnext <= $max)
+	if ($ClearinghouseOK)
 	{
-	    #
-	    # Not enough features are registered in the clearinghouse. ($clnext needs to be $max + 1)
-	    # Register some more.
-	    #
-
-	    my $missing = $max - $clnext + 1;
-	    my $start = $self->clearinghouse_register_features($genome, $ftype, $missing);
-	    if (defined($start))
+	    my $clnext = $self->clearinghouse_next_feature_id($genome, $ftype);
+	    if ($clnext <= $max)
 	    {
-		print "Registered $missing new features of type $ftype on $genome (start=$start)\n";
+		#
+		# Not enough features are registered in the clearinghouse. ($clnext needs to be $max + 1)
+		# Register some more.
+		#
+		
+		my $missing = $max - $clnext + 1;
+		my $start = $self->clearinghouse_register_features($genome, $ftype, $missing);
+		if (defined($start))
+		{
+		    print "Registered $missing new features of type $ftype on $genome (start=$start)\n";
+		}
 	    }
 	}
     }

@@ -57,6 +57,7 @@ else
 {
     open(SYN,"<$syn") || die "could not open synonyms file '$syn': $!";
     
+    print STDERR "Parse $syn\n";
     #
     # Parse the peg.synonyms file.
     #
@@ -133,6 +134,7 @@ while (defined($sim) && ($sim =~ /^(\S+)/))
     my %pegorg;
     if (@sims <= $targetN)
     {
+	    #print STDERR "RS $curr ALL " . @sims . "\n";
 	foreach $_ (@sims)
 	{
 	    print $_->[0] or die "reduce_sims cannot write to stdout: $!";
@@ -208,7 +210,7 @@ while (defined($sim) && ($sim =~ /^(\S+)/))
 	{
 	    $cnt{$org} = int(0.99999 + (($orgs{$org}/$tot) * $targetN));
 	    $_ = @sims;
-	    # print STDERR "$org $orgs{$org} $cnt{$org} $_\n";
+	    #print STDERR "$curr $org $orgs{$org} $cnt{$org} $_\n";
 	}
 
 	foreach $_ (@sims)
