@@ -11,6 +11,7 @@ my($opt, $usage) = describe_options("%c %o sims-dir",
 				    ["threads=i", "Number of threads to use", { default => 4 }],
 				    ["keep=i", "Keep this many matches", { default => 200 }],
 				    ["diamond-sensitivity=s", "Diamond sensitivity flag to use", { default => "sensitive" }],
+				    ["diamond-block-size=s", "Diamond block size", { default => 5 }],
 				    ["help|h", "Show this help message"]);
 
 print($usage->text), exit 0 if $opt->help;
@@ -42,7 +43,7 @@ for my $seq_file (@seq_files)
     my $sim_path = "$raw_dir/$sim_file";
 
     my @cmd = ("diamond", "blastp", "-v",
-		  "-b5",
+		  "--block-size", $opt->diamond_block_size,
 		  "-c1",
 		  "-e", "1e-4",
 		  "--masking", 0,
