@@ -59,7 +59,7 @@ if ($unused)
 }
 
 my %deleted;
-if ($to_delete)
+if ($to_delete && -f $to_delete)
 {
     open(DEL, "<$to_delete") or die "Cannot open delete file to_delete: $!";
     while (<DEL>)
