@@ -43,7 +43,7 @@ sub save {
   my ( $self ) = @_;
   my $file = $listdir . $self->{ 'name' };
 
-  open ( FILE, ">$file" );
+  open ( FILE, ">", $file ) or die "Cannot write $file: $!";
 
   print FILE "Name:\t";
   print FILE $self->{ 'name' };
@@ -56,7 +56,28 @@ sub save {
     print FILE "Genome:\t$g\n";
   }
 
+  close(FILE);
   return 1;
+}
+
+sub create
+{
+    my($name, $description, $genomes) = @_;
+
+    my $file = $listdir . $name;
+    
+    open ( FILE, ">", $file ) or die "Cannot write $file: $!";
+
+    print FILE "Name:\t";
+    print FILE $name;
+    print FILE "\n\nDescription:\t";
+    print FILE $description;
+
+    print FILE "\n\n";
+    foreach my $g ( @$genomes ) {
+	print FILE "Genome:\t$g\n";
+    }
+    close(FILE);
 }
 
 sub load {
