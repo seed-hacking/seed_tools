@@ -5,7 +5,6 @@ seed-genome-list
 =head1 SYNOPSIS
 
 seed-genome-list [--from-file ... ] create name [genome-id...]
-seed-genome-list [--from-file ... ] create name [genome-id...]
 seed-genome-list get name
 seed-genome-list list
 
