@@ -11,16 +11,22 @@ seed-genome-list list
 =cut
 
 use strict;
+use FIG;
 use GenomeLists;
 use Data::Dumper;
 use Getopt::Long::Descriptive;
 
-my %commands = (create => [\&do_create, sub { @ARGV > 1 }],
+my $fig = FIG->new;
+
+my %commands = (create => [\&do_create, sub { @ARGV >= 1 }],
 		get => [\&do_get, sub { @ARGV == 1 }],
 		list => [\&do_list, sub { @ARGV == 0}],
     );
 
 my($opt, $usage) = describe_options("%c %o cmd [opts]",
+				    ["seed-genome-list create name"],
+				    ["seed-genome-list get name"],
+				    ["seed-genome-list list"],
 				    ["from-file=s", "Read genome IDs from given file instead of command line"],
 				    ["description=s", "Description for a new list"],
 				    ["help|h" => "Show this help message"]);
@@ -58,6 +64,12 @@ sub do_get
 sub do_create
 {
     my $name = shift @ARGV;
+
+    #
+    # load genome list to validate incoming ids
+    #
+    my %genomes;
+    $genomes{$_} = 1 foreach $fig->genomes;
     my @genomes;
     if (@ARGV)
     {
@@ -80,7 +92,17 @@ sub do_create
 	    }
 	    close($fh);
 	}
+	else
+	{
+	    die "Cannot open " . $opt->from_file . ": $!\n";
+	}
     }
+    my @missing = grep { ! $genomes{$_} } @genomes;
+    if (@missing)
+    {
+	die "Not creating group; these genomes are missing from the SEED: @missing\n";
+    }
+
     GenomeLists::create($name, $opt->description, \@genomes);
 }
 
