@@ -23,6 +23,7 @@ my %commands = (create => [\&do_create, sub { @ARGV > 1 }],
 my($opt, $usage) = describe_options("%c %o cmd [opts]",
 				    ["from-file=s", "Read genome IDs from given file instead of command line"],
 				    ["description=s", "Description for a new list"],
+				    ["ignore-missing-genomes", "Ignore missing genomes when creating group"],
 				    ["help|h" => "Show this help message"]);
 print($usage->text), exit 0 if $opt->help;
 die($usage->text) if @ARGV < 1;
