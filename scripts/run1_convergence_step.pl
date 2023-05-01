@@ -1,7 +1,5 @@
 use strict;
 use Data::Dumper;
-use SeedEnv;
-use gjoseqlib;
 use File::Path 'make_path';
 use Proc::ParallelLoop;
 use Getopt::Long::Descriptive;
