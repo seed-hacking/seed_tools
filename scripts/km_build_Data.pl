@@ -11,11 +11,13 @@ my $usage = "usage: km_build_Data -d DataDir -k 8\n";
 my $dataD;
 my $k = 8;
 my $rast_dirs;
+my $sort_mem = "4G";
 
 my $use_pub_seed = 0;     #### default is set to core_seed ###
 my $rc  = GetOptions('d=s' => \$dataD,
 		     'p'   => \$use_pub_seed,
 		     'r=s' => \$rast_dirs,
+		     'm=s' => \$sort_mem,
 		     'k=i' => \$k);
 
 my $min_reps_required = $ENV{KM_MIN_REPS_REQUIRED} || 5;
@@ -299,7 +301,7 @@ sub build_reduced_kmers {
     {
 	$sort = "/scratch/olson/gnu-sort --parallel 10";
     }
-    open(RAW,"| $sort -S 160G  > $dataD/sorted.kmers") || die "could not open $dataD/sorted.kmers: $!";
+    open(RAW,"| $sort -S $sort_mem  > $dataD/sorted.kmers") || die "could not open $dataD/sorted.kmers: $!";
 #    open(RAW,"| sort -T . -S 80G  > $dataD/sorted.kmers") || die "could not open $dataD/sorted.kmers: $!";
     my $seqID=0;
     my @genomes = map { chomp; $_ } ($properties ? `cut -f2 $dataD/properties` : `cut -f2 $dataD/genomes`);

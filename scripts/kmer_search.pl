@@ -124,6 +124,7 @@ my($opt, $usage) = describe_options("%c %o < input",
 				    ["pubseed|p" => "use PubSEED"],
 				    ["rast-dirs|r=s" => "RAST directories to use for input"],
 				    ["a" => "input is amino acid sequences"],
+				    ["sort-memory=s" => "memory to assign to sort", { default => "4G" }],
 				    ["z" => "compute Z-scores"],
 				    ["debug" => "show per-hit kmer debugging data (genome - amino acid only)"],
 				    ["help|h" => "Show this help message"],
@@ -204,7 +205,7 @@ if ($opt->allow_rebuild && $dataD && ! -s "$dataD/final.kmers")
     {
 	$which_seed = '';
     }
-    &SeedUtils::run("km_build_Data -d $dataD -k 8 $which_seed");
+    &SeedUtils::run("km_build_Data -m " . $opt->sort_memory . " -d $dataD -k 8 $which_seed");
 }
 
 #
