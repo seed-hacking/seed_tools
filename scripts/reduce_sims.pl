@@ -115,14 +115,18 @@ while (defined($sim) && ($sim =~ /^(\S+)/))
 	#
 	# $1 is id2 for this sim record.
 	#
-        if (($curr ne $1) && (! $id2s{$1}))
-        {
-            push(@sims,[$sim,$1]);
-	    #
-	    # Commenting out this line preserves the behavior incurred
-	    # when there was a typo in that line, introduced in vers 1.6.
-            #$id2s{$1} = 1;
-        }
+#        if (($curr ne $1) && (! $id2s{$1}))
+#        {
+#            push(@sims,[$sim,$1]);
+#	    #
+#	    # Commenting out this line preserves the behavior incurred
+#	    # when there was a typo in that line, introduced in vers 1.6.
+#            #$id2s{$1} = 1;
+#        }
+	# We keep the self-sim; it serves as an anchor for a future
+	# merge of flipped sims in the case that a feature has
+	# no other similarities in this batch.
+	push(@sims, [$sim, $1]);
         $sim = &get_input;
     }
 
