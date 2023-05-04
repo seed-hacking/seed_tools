@@ -111,5 +111,5 @@ print "Load annotations\n";
 my $ok = run(["fig", "assign_functionF", $user, "$dir/reannoated.$now.txt"]);
 $ok or die "assignment failed\n";
 print "Load families\n";
-my $ok = run(["load_pattyfams", $genome]);
+my $ok = run(["load_pattyfams", "--no-compute", $genome]);
 $ok or die "assignment failed\n";
