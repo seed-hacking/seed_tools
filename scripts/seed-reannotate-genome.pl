@@ -10,12 +10,13 @@ use IPC::Run qw(run);
 use POSIX;
 use Getopt::Long::Descriptive;
 
-my($opt, $usage) = describe_options("%c %o genome-id",
+my($opt, $usage) = describe_options("%c %o user genome-id",
 				    ["save-intermediates" => "Show and save the temp files for genome annotation"],
 				    ["help|h" => "Show this help message"]);
 print($usage->text), exit (0) if $opt->help;
-die($usage->text), if @ARGV != 1;
+die($usage->text), if @ARGV != 2;
 
+my $user = shift;
 my $genome = shift;
 
 my $now = strftime("%Y-%m-%d-%H-%M-%S", localtime);
@@ -106,3 +107,9 @@ for my $feat ($gobj->features)
     }
 }
 close(PF);
+print "Load annotations\n";
+my $ok = run(["fig", "assign_functionF", $user, "$dir/reannoated.$now.txt"]);
+$ok or die "assignment failed\n";
+print "Load families\n";
+my $ok = run(["load_pattyfams", $genome]);
+$ok or die "assignment failed\n";
