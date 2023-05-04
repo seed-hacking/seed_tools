@@ -40,7 +40,11 @@ sub fill_ss
     my ($ss_name, $genomes) = @_;
 
     my $subsystem = $fig->get_subsystem($ss_name);
-    $subsystem or die "Cannot get $ss_name\n";
+    if (!$subsystem)
+    { 
+       warn "Cannot get '$ss_name'\n";
+	return;
+    }
     
     my $comment = "";
     
