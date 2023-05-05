@@ -58,7 +58,9 @@ sub fill_ss
 	}
       
 	$subsystem->add_genome( $genome );
-
+	my $idx = $subsystem->get_genome_index($genome);
+	$subsystem->{variant_code}->[$idx] = '?';
+	
 	foreach my $role ( $subsystem->get_roles() ) {
 	    my @inpegs = $subsystem->get_pegs_from_cell( $genome, $role );
 	    next if ( @inpegs > 0 );
