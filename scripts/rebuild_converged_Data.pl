@@ -1,7 +1,6 @@
 ########################################################################
 use strict;
 use Data::Dumper;
-use SeedEnv;
 use gjoseqlib;
 use File::Path 'make_path';
 use File::Basename;
@@ -27,6 +26,8 @@ my($opt, $usage) = describe_options("%c %o data-dir",
 				    ["min-reps-required=i", "Number of proteins required to form a family",
 				     { default => 5 }],
 				    ["seed=s", "Choose which seed to draw genomes from", { default => 'core' }],
+				    ["this-seed", "Force use of this SEED"],
+				    ["sort-memory=s", "Use this much sort memory", { default => "4G" }],
 				    ["virus-dir=s", "Incorporate virus genomes from here"],
 				    ["function-overrides=s", "File of function overrides"],
 				    ["parallel|p=i" => "Number of processes to use in running annotations", { default => 4 }],
@@ -42,6 +43,11 @@ $ENV{KM_SKIP_WEIGHTED_SCORE_COMPUTATION} = $opt->skip_weighted_score_computation
 $ENV{KM_KEEP_INTERMEDIATES} = $opt->keep_intermediates;
 
 my $seed_path = $supported_seeds{$opt->seed};
+if (! -d $seed_path && $opt->this_seed)
+{
+    $seed_path = dirname($FIG_Config::fig_disk);
+    print "set to $seed_path\n";
+}
 if (!$seed_path)
 {
     die $opt->seed . " is not a supported SEED. Valid SEEds are " . join(" ", sort keys %supported_seeds) . "\n";
@@ -421,10 +427,11 @@ unlink("$dir/Data.0/final.kmers");
 unlink("$dir/Data.1/final.kmers");
 unlink("$dir/Data.2/final.kmers");
 my $par = "--parallel " . $opt->parallel;
-&SeedUtils::run("run1_convergence_step $par 1 $dir");
+my $mem = "--sort-memory " . $opt->sort_memory;
+&SeedUtils::run("run1_convergence_step $par $mem 1 $dir");
 #exit;
-&SeedUtils::run("run1_convergence_step $par 2 $dir");
-&SeedUtils::run("run1_convergence_step $par 3 $dir");
+&SeedUtils::run("run1_convergence_step $par $mem 2 $dir");
+&SeedUtils::run("run1_convergence_step $par $mem 3 $dir");
 print STDERR "now computing stats to support z-scores on density\n";
 &SeedUtils::run("compute_stats_for_kmer_hits -d $dir/Data.2");
 print STDERR "$dir/Data.2 should be ready to go\n";

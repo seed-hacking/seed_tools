@@ -184,8 +184,14 @@ foreach $_ (&files_with_assignments($mode, @genomes))
 	}
         if ($aLN > 0)
         {
-            $dbf->load_table( tbl => "assigned_functions_log",
-                      file => "$temp_dir/tmpl$$" );
+	    eval {
+		$dbf->load_table( tbl => "assigned_functions_log",
+			  file => "$temp_dir/tmpl$$" );
+		}; 
+	    if ($@)
+	    {
+		    die "assigned_functions_log load failed, file $temp_dir/tmpl$$\n$@";
+		}
         }
         if ($rN > 0)
         {

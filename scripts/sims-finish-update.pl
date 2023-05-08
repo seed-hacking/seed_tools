@@ -29,7 +29,10 @@ if (-d "$sims_dir/prev_sims")
     my $ok = run(["flip_sims", "$sims_dir/sims.split", "$sims_dir/sims.flipped"]);
     $ok or die "flip_sims failed\n";
 
-    $ok = run(["update_sims2", "$sims_dir/nr-len.btree", "$sims_dir/nr-len.btree", $opt->keep,
+    $ok = run(["update_sims2", 
+	       "$sims_dir/nr-len.btree", 
+	       "$sims_dir/peg.synonyms.reduce_sims_index.btree", 
+	       $opt->keep,
 	       "$sims_dir/prev_sims",
 	       "$sims_dir/Sims.$tag",
 	       "$sims_dir/sims.flipped",

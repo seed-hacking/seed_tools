@@ -59,7 +59,7 @@ if ($unused)
 }
 
 my %deleted;
-if ($to_delete)
+if ($to_delete && -f $to_delete)
 {
     open(DEL, "<$to_delete") or die "Cannot open delete file to_delete: $!";
     while (<DEL>)
@@ -161,6 +161,9 @@ pareach \@files, sub {
     #
     # Rescan the old sims file, adding the new sims.
     #
+    my $n_read = 0;
+    my $n_written = 0;
+    my $n_bad = 0;
     $sim = <OLD>;
     while (defined($sim))
     {
@@ -169,8 +172,10 @@ pareach \@files, sub {
 	    if (!(sim_ok($1) && sim_ok($2)))
 	    {
 		$sim = <OLD>;
+		$n_bad++;
 		next;
 	    }
+	    $n_read++;
             $curr = $1;
             $currQ = quotemeta $curr;
             @sims = ();
@@ -179,8 +184,16 @@ pareach \@files, sub {
                 if ($sim =~ /^$currQ\t(\S+)/)
                 {
 		    my $ok = sim_ok($1);
-                    push(@sims,$sim) if $ok;
-                }
+		    if (sim_ok($1))
+		    {
+			push(@sims,$sim);
+			$n_read++;
+		    }
+		    else
+		    {
+			$n_bad++;
+		    }
+		}
                 $sim = <OLD>;
             }
 
@@ -217,6 +230,7 @@ pareach \@files, sub {
 		#
 		delete $idx{$curr};
             }
+	    $n_written += @sims;
             print NEW join("",@sims) or die "$0 cannot write to $out_dir/$base: $!";
         }
         else
@@ -224,9 +238,10 @@ pareach \@files, sub {
             $sim = <OLD>;
         }
     }
+    print "$out_dir/$base\t$n_read\t$n_written\t$n_bad\n";
     close(NEW);
     close(OLD);
-}, { Num_Workers => 6 };
+}, { Max_Workers => 3 };
 
 sub sim_ok
 {

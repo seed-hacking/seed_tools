@@ -1,7 +1,5 @@
 use strict;
 use Data::Dumper;
-use SeedEnv;
-use gjoseqlib;
 use File::Path 'make_path';
 use Proc::ParallelLoop;
 use Getopt::Long::Descriptive;
@@ -12,6 +10,7 @@ use Getopt::Long::Descriptive;
 #
 
 my($opt, $usage) = describe_options("%c %o Step-Number Dir",
+                                    ["sort-memory=s" => "memory to assign to sort", { default => "4G" }],
 				    ["parallel|p=i" => "Number of processes to use in running annotations", { default => 4 }],
 				    ["help|h" => "Show this help message"]);
 
@@ -144,7 +143,8 @@ sub make_Data {
     close(GS);
 #   unlink("$dir/Data.$last/final.kmers");
 #   unlink("$dir/Data.$last/kmer.table.mem_map");
-    my $cmd = "kmer_search --allow-rebuild -r $dir/Organisms -a -d $dir/Data.$last < $dir/Organisms/$agenome/Features/peg/fasta > $dir/Data.$last/test.out";
+    my $sort_mem = $opt->sort_memory;
+    my $cmd = "kmer_search --sort-memory $sort_mem --allow-rebuild -r $dir/Organisms -a -d $dir/Data.$last < $dir/Organisms/$agenome/Features/peg/fasta > $dir/Data.$last/test.out";
     print STDERR "$cmd\n";
     &SeedUtils::run($cmd);
 }
