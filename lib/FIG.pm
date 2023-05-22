@@ -455,6 +455,7 @@ the database methods.
 
 sub db_handle {
     my($self) = @_;
+    $self->{_dbf}->{_dbh}->ping();
     return $self->{_dbf};
 }
 
@@ -16947,9 +16948,11 @@ sub ids_in_set {
         if (($relational_db_response = $rdbH->SQL("SELECT id FROM $relation WHERE ( $set_name = $which)")) &&
             (@$relational_db_response >= 1))
         {
-            return grep { ! $self->is_deleted_fid($_) }
-                   sort { by_fig_id($a,$b) }
-                   map { $_->[0] } @$relational_db_response;
+	    my @fids =  map { $_->[0] } @$relational_db_response;
+	    my $del = $self->is_deleted_fid_bulk(@fids);
+            return grep { ! $del->{$_} }
+	    sort { by_fig_id($a,$b) }
+	    @fids;
         }
     }
     return ();

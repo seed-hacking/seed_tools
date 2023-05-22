@@ -95,7 +95,7 @@ my $next_id = 1;
     
 for my $genome (@genomes)
 {
-    print STDERR "$genome\n";
+	# print STDERR "$genome\n";
     my $gs = escape($fig->genus_species($genome));
     if ($which eq 'function')
     {
@@ -108,7 +108,7 @@ for my $genome (@genomes)
 	    my $docid = SeedSearch::fid_to_docid($fid);
 	    if (!defined($docid))
 	    {
-		print STDERR "Skipping $fid docid not defined\n";
+		    #print STDERR "Skipping $fid docid not defined\n";
 		next;
 	    }
 	    print <<END;
@@ -171,7 +171,7 @@ END
 	    my $docid = SeedSearch::fid_to_docid($fid);
 	    if (!$docid)
 	    {
-		warn "Skipping $fid docid not defined\n";
+		    #warn "Skipping $fid docid not defined\n";
 		next;
 	    }
 	    print <<END;
