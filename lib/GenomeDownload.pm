@@ -13,7 +13,7 @@ use FIG;
 my $json = JSON::XS->new;
 
 
-my @allowed = qw(
+my @allowed_full = qw(
 	genbank gbk
 	genbank_merged gbk
 	spreadsheet_txt txt
@@ -38,12 +38,14 @@ my @need_contig = qw(
 	embl
 	);
 my %allowed;
+my @allowed;
 my %need_contig = map { $_ => 1 } @need_contig;
 my %suffix;
-for (my $i = 0; $i < @allowed; $i += 2)
+for (my $i = 0; $i < @allowed_full; $i += 2)
 {
-    $allowed{$allowed[$i]} = 1;
-    $suffix{$allowed[$i]} = $allowed[$i + 1];
+    $allowed{$allowed_full[$i]} = 1;
+    $suffix{$allowed_full[$i]} = $allowed_full[$i + 1];
+    push(@allowed, $allowed_full[$i]);
 }
 
 sub get_export
